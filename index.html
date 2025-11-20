@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<!-- saved from url=(0027)file:///D:/RISMAA/coba.html -->
+<html lang="id"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mood Diary</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #b3e5fc, #e0f7fa);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      transition: background 0.8s ease, color 0.5s ease;
+    }
+
+    .dark-mode {
+      color: #f5f5f5;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      width: 370px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+      transition: background 0.8s ease, color 0.5s ease;
+    }
+
+    .dark-mode .container {
+      background: rgba(31, 31, 47, 0.7);
+      color: #f5f5f5;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      resize: none;
+      font-size: 14px;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    textarea:focus {
+      border-color: #6bcdfd;
+      box-shadow: 0 0 6px rgba(107, 205, 253, 0.5);
+    }
+
+    input[type="date"] {
+      margin: 10px 0;
+      padding: 8px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      outline: none;
+    }
+
+    button {
+      margin-top: 10px;
+      background: #6bcdfd;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #4bb7e6;
+    }
+
+    .result {
+      margin-top: 15px;
+      font-size: 16px;
+    }
+
+    .entries {
+      margin-top: 20px;
+      text-align: left;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .entry {
+      background: rgba(247, 250, 255, 0.8);
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: 0.5s;
+    }
+
+    .dark-mode .entry {
+      background: rgba(42, 42, 69, 0.6);
+    }
+
+    .delete {
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: 0.3s;
+    }
+
+    .delete:hover {
+      background: #ff4b4b;
+    }
+
+    .mode-toggle {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 22px;
+      margin-bottom: 10px;
+      color: #333;
+      transition: 0.3s;
+    }
+
+    .dark-mode .mode-toggle {
+      color: #f5f5f5;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="containerBox">
+    <button class="mode-toggle" onclick="toggleMode()">🌙</button>
+    <h2>Mood Diary 😌</h2>
+    <label for="journalDate">📅 Pilih Tanggal:</label>
+    <input type="date" id="journalDate">
+    <p>Tuliskan perasaanmu hari ini:</p>
+    <textarea id="moodInput" placeholder="Ceritakan di sini..."></textarea>
+    <br>
+    <button onclick="analyzeMood()">Analisis Mood</button>
+    <div class="result" id="result"></div>
+    <div class="entries" id="entries"><h3>📔 Catatan Kamu</h3><p>Tidak ada catatan untuk tanggal ini 🌤️</p></div>
+  </div>
+
+  <script>
+    let isDarkMode = false;
+    let lastMood = "Netral";
+
+    function toggleMode() {
+      document.body.classList.toggle("dark-mode");
+      isDarkMode = document.body.classList.contains("dark-mode");
+      document.querySelector(".mode-toggle").textContent = isDarkMode ? "☀️" : "🌙";
+      updateBackground(lastMood);
+    }
+
+    function analyzeMood() {
+      const text = document.getElementById("moodInput").value.trim();
+      const date = document.getElementById("journalDate").value || new Date().toISOString().split("T")[0];
+
+      if (!text) {
+        alert("Tulis dulu yaa perasaanmu 💬");
+        return;
+      }
+
+      let mood = "", emoji = "", message = "";
+      const t = text.toLowerCase();
+
+      if (t.includes("senang") || t.includes("bahagia") || t.includes("gembira") || t.includes("hebat")) {
+        mood = "Senang"; emoji = "😄"; message = "Hidup gak selalu mudah, tapi hari ini kamu bisa tersenyum, dan itu luar biasa. 🌈";
+      } else if (t.includes("sedih") || t.includes("capek") || t.includes("lelah") || t.includes("kecewa")) {
+        mood = "Sedih"; emoji = "😢"; message = "Lelah juga bagian dari perjalanan. Kamu boleh berhenti sebentar. 🌙";
+      } else if (t.includes("marah") || t.includes("kesal") || t.includes("emosi")) {
+        mood = "Marah"; emoji = "😡"; message = "Marah itu manusiawi, tapi jangan biarkan dia menelan lembutnya hatimu. 🔥";
+      } else if (t.includes("cemas") || t.includes("takut") || t.includes("khawatir")) {
+        mood = "Cemas"; emoji = "😨"; message = "Tarik napas perlahan. Dunia gak seburuk yang kamu pikirkan sekarang. 🌿";
+      } else {
+        mood = "Netral"; emoji = "😐"; message = "Hari biasa pun tetap berharga 💫";
+      }
+
+      lastMood = mood;
+      updateBackground(mood);
+      saveEntry(date, text, mood, emoji);
+
+      document.getElementById("moodInput").value = "";
+      document.getElementById("result").innerHTML = `<strong>${emoji} Mood kamu hari ini: ${mood}</strong><br>${message}`;
+      displayEntries();
+    }
+
+    function updateBackground(mood) {
+      const lightColors = {
+        Senang: ["#a7ffeb", "#81d4fa", "rgba(255,255,255,0.8)"],
+        Sedih: ["#b3cde0", "#cfd9df", "rgba(255,255,255,0.7)"],
+        Marah: ["#ff9a9e", "#fecfef", "rgba(255,240,240,0.8)"],
+        Cemas: ["#d1c4e9", "#b39ddb", "rgba(250,245,255,0.8)"],
+        Netral: ["#e0eafc", "#cfdef3", "rgba(255,255,255,0.8)"]
+      };
+
+      const darkColors = {
+        Senang: ["#1e3c72", "#2a5298", "rgba(30,60,114,0.4)"],
+        Sedih: ["#232526", "#414345", "rgba(40,40,50,0.5)"],
+        Marah: ["#642b73", "#c6426e", "rgba(60,30,60,0.4)"],
+        Cemas: ["#373b44", "#4286f4", "rgba(50,60,100,0.4)"],
+        Netral: ["#141E30", "#243B55", "rgba(40,50,70,0.5)"]
+      };
+
+      const [c1, c2, boxColor] = isDarkMode ? darkColors[mood] : lightColors[mood];
+      document.body.style.background = `linear-gradient(135deg, ${c1}, ${c2})`;
+      document.getElementById("containerBox").style.background = boxColor;
+    }
+
+    function saveEntry(date, text, mood, emoji) {
+      const entries = JSON.parse(localStorage.getItem("entries") || "[]");
+      entries.push({ date, text, mood, emoji });
+      localStorage.setItem("entries", JSON.stringify(entries));
+    }
+
+    function displayEntries() {
+      const selectedDate = document.getElementById("journalDate").value;
+      const entries = JSON.parse(localStorage.getItem("entries") || "[]");
+      const container = document.getElementById("entries");
+      container.innerHTML = "<h3>📔 Catatan Kamu</h3>";
+
+      const filtered = selectedDate ? entries.filter(e => e.date === selectedDate) : entries;
+      if (filtered.length === 0) {
+        container.innerHTML += "<p>Tidak ada catatan untuk tanggal ini 🌤️</p>";
+        return;
+      }
+
+      filtered.forEach((entry, index) => {
+        container.innerHTML += `
+          <div class="entry">
+            <span><b>${entry.date}</b><br>${entry.emoji} ${entry.text}<br><em>${entry.mood}</em></span>
+            <button class="delete" onclick="deleteEntry(${index})">Hapus</button>
+          </div>`;
+      });
+    }
+
+    function deleteEntry(index) {
+      const entries = JSON.parse(localStorage.getItem("entries") || "[]");
+      entries.splice(index, 1);
+      localStorage.setItem("entries", JSON.stringify(entries));
+      displayEntries();
+    }
+
+    document.getElementById("journalDate").addEventListener("change", displayEntries);
+    displayEntries();
+  </script>
+
+
+</body></html>
